@@ -2,6 +2,19 @@
 #include <cmath>
 #include <vector>
 
+/* TODO:
+ *    - [ ] implement zero gradient boundary condition
+ *    - [ ] discretization in time
+ *        - [ ] forward Euler
+ *        - [ ] Heune ( RK2 )
+ *        - [ ] look into other solvers
+ *    - [ ] tie everything into objects
+ *    - [ ] is returning a triple instead of an array a good idea?
+ *    - [ ] write the main body
+ *    - [ ] CMake
+ *    - [ ] VTK
+ */
+
 using RealNumber = float;
 
 const RealNumber gamma_g = 1.4;
