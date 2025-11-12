@@ -1,0 +1,126 @@
+// Sod's problem : FVM for the Euler's equations in 1D - Rusanov flux, Euler's method
+
+struct Triple
+{
+  RealNumber data_1;
+  RealNumber data_2;
+  RealNumber data_3;
+};
+
+class Mesh
+{
+private:
+
+  vector< RealNumber > x_coordinates;
+  vector< RealNumber > data_1; // density
+  vector< RealNumber > data_2; // momentum
+  vector< RealNumber > data_3; // energy
+  size_t number_ghost_cells;
+
+public:
+  
+  Triple primitive_to_conserved( const Triple primitive ) {}
+
+  Triple conserved_to_primitive( const Triple conserved ) {}
+
+  Triple getValues( i )
+  {
+    return { data_1[ i ], data_2[ 2 ], data_3[ i ] };
+  }
+
+  vector< RealNumber > getData()
+  {
+    return vector< RealNumber >;
+  }
+
+  void construct_grid() {}
+};
+
+class NumericalSolver
+{
+  struct MyNumericalFlux
+  {
+    Triple numerical_flux( Triple data_left, Triple data_right )
+    {
+      return Triple flux;
+    }
+  }
+
+  template < typename T >
+  Triple NumericalFlux( Triple data_left, Triple data_right )
+  {
+    T::numerical_flux( data_left, data_right );
+  }
+
+  vector< RealNumber > rhs( Mesh )
+  {
+    vector< RealNumber > Flux;
+
+    for Cell in Mesh
+
+      Flux[ Cell ] =  - 1 / dx * ( NumericalFlux< MyNumericalFlux >( Cell_left ) + NumericalFlux< MyNumericalFlux >( Cell_riht ) );
+
+    end
+    
+    return Flux;
+  }
+
+  struct ODRSolver
+  {
+    void solve( Mesh )
+    {
+      for Cell in Mesh
+        update cell value
+      end
+    }
+  }
+}
+
+// --------------------------------------------------
+
+struct MyInitialConditions
+{
+  static void impose( Mesh )
+  {
+    for Cell in Mesh
+
+      expression
+
+    end
+  }
+}
+
+template < typename T >
+void InitialConditions( Mesh )
+{
+  T::impose( Mesh );
+}
+
+// ---------------------------------------------------
+
+struct MyBoundaryConditions
+{
+  static void impose( Mesh )
+  {
+    for Cell in Mesh
+      if Cell == Boundary
+
+        expression
+
+      end
+    end
+  }
+}
+
+template < typename T >
+void BoundaryConditions( Mesh )
+{
+  T::impose( Mesh );
+}
+
+// -------------------------------------------------
+
+int main()
+{
+
+}
