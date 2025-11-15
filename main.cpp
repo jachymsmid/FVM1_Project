@@ -150,7 +150,7 @@ RealNumber max_global_speed( const Mesh &mesh )
 
 struct Rusanov
 {
-  Conservative numerical_flux( const Conservative &U_L, const Conservative &U_R )
+  static Conservative numerical_flux( const Conservative &U_L, const Conservative &U_R )
   {
     Conservative flux_l = flux( U_L );
     Conservative flux_r = flux( U_R );
@@ -164,11 +164,17 @@ struct Rusanov
   }
 };
 
+template < typename T >
+Conservative NumericalFlux( const Conservative &U_L, const Conservative &U_R )
+{
+  T::numerical_flux( U_L, U_R );
+}
+
 // ----------------------------------
 //      initial conditions
 // ----------------------------------
 
-struct MyInitialConditions
+struct Sods_problem 
 {
   static void impose( Mesh &mesh )
   {
@@ -191,7 +197,12 @@ void InitialConditions( Mesh &mesh )
 
 struct Zero_gradient
 {
-  static void impose( Mesh &mesh ) {};
+  static void impose( Mesh &mesh )
+  {
+    size_t N = mesh.getSize();
+    mesh.getValues( 0 ) = mesh.getValues( 1 );
+    mesh.getValues( N - 1 ) = mesh.getValues( N - 2 );
+  };
 };
 
 template< typename T >
@@ -210,5 +221,15 @@ int main()
   const size_t domain_length = 1;
   RealNumber t = 0.f;
   const RealNumber end_time = 0.25;
-  
+
+  Mesh mesh;
+  InitialConditions< Sods_problem >( mesh );
+
+  while ( t < T )
+  {
+    Conservative rhs = NumericalFlux< Rusanov >( mesh );
+    Conservative eq = ODRSolver< Euler >( mesh );
+  }
+
+  return 0;
 }
