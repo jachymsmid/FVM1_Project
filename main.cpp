@@ -1,5 +1,8 @@
-#include "utils.h"
-#include <iostream>
+#include "utils/ODEsolver.hpp"
+#include "utils/FVMsolver.hpp"
+#include "equations/Eulers_equation.hpp"
+#include "utils/BoundaryConditions.hpp"
+#include "utils/InitialConditions.hpp"
 
 /* TODO:
  *    - [ ] implement zero gradient boundary condition
@@ -22,10 +25,36 @@ using RealNumber = float;
 
 int main()
 {
-  // testing
-  Mesh< std::vector< RealNumber >, RealNumber > mesh;
-  mesh.write_data();
-  std::cout << mesh.getSpatialStep() << std::endl;
+  static constexpr std::size_t M = 3; // Euler equations
 
+  using VectorS   = Vector< M, RealNumber >;
+  using StateT = std::vector< VectorS >;
+
+  RealNumber dx = 0.01;
+  RealNumber time_step = 0.001;
+
+  // physical flux
+  using Equations = EulersEquations< M, RealNumber >;
+  Equations physical_flux{1.4};
+
+  // choose numerical flux
+  using NumericalFlux = Rusanov< M, RealNumber >;
+
+  // choose boundary conditions
+  using BoundaryConditions = NeumannBC< M, RealNumber >;
+  BoundaryConditions bc;
+
+  // build spatial operator                                                                                                                                                                                                                                                                  
+  auto rhs = FVMsolver< M, RealNumber, Rusanov, Equations, BoundaryConditions >(dx, physical_flux, bc);
+
+  // ODE solver (time integration)
+  ODEsolver< StateT, RealNumber, Euler, decltype(rhs), RealNumber > solver(rhs, time_step);
+
+  VectorS data;
+
+
+  // solve
+  auto sol = solver.next_step(0.0, 0.1, data);
+  
   return 0;
 }
