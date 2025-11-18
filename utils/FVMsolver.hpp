@@ -2,7 +2,7 @@
 
 /* 
  * -----------------------------------
- *       NumericalSolver struct 
+ *       FVMsolver struct 
  * -----------------------------------
  */
 
@@ -69,17 +69,23 @@ private:
 };
 
 
-template< size_t Size, class RealNumber >
+template
+<
+  size_t Size,
+  class RealNumber,
+  class max_speed_function
+>
 struct Rusanov {
 
     template< class FluxFunction >
-    static Vector< Size, RealNumber > numerical_flux(const FluxFunction &Flux, const Vector< Size, RealNumber > &value_left, const Vector< Size, RealNumber > &value_right)
+    static Vector< Size, RealNumber > numerical_flux(const FluxFunction &Flux, const max_speed_function &max_wave_speed, const Vector< Size, RealNumber > &value_left, const Vector< Size, RealNumber > &value_right)
     {
         Vector< Size, RealNumber > flux_left = Flux( value_left );
         Vector< Size, RealNumber > flux_right = Flux( value_left );
 
         // user must define max eigenvalue estimate - depend on the system of equations
-        RealNumber a = max_wave_speed( value_left , value_right ); // user-defined function
+        RealNumber a = max_wave_speed( value_left , value_right );
+        // how to pass this function?
 
         Vector< Size, RealNumber > flux;
         for ( size_t i = 0; i < Size; ++i )

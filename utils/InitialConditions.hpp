@@ -11,13 +11,14 @@ using Vector = std::array< RealNumber, Size >;
 template
 <
   std::size_t Size,
-  class RealNumber 
+  class RealNumber, 
+  class DataType
 >
 struct Sods_problem
 {
     using VectorS = Vector< Size, RealNumber >;
 
-    RealNumber x0;  // interface position
+    RealNumber x0;  // position of the diaphragm 
     VectorS left;
     VectorS right;
 
@@ -25,7 +26,25 @@ struct Sods_problem
     Sods_problem( RealNumber x0, VectorS L, VectorS R)
         : x0(x0), left(L), right(R) {}
 
-    VectorS operator()( RealNumber x) const {
-        return (x < x0 ? left : right);
+    void impose( DataType data, RealNumber spatial_step )
+    {
+      RealNumber x; // coordinate
+      for ( std::size_t i = 0; i < Size; i++ )
+      {
+        for ( std::size_t j = 0; j < Size; j++ )
+        {
+          x = i * spatial_step;
+          if ( x < x0 )
+          {
+            data[ i ][ j ] = left[ j ];
+          }
+          else
+          {
+            data[ i ][ j ] = right[ j ];
+          }
+          // is ternary operator here any better?
+        }
+      }
+
     }
 };

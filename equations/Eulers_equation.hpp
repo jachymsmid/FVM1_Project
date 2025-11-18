@@ -31,4 +31,9 @@ struct EulersEquations {
 
         return flux;
     }
+
+    RealNumber operator()( const Vector< Size, RealNumber> value_left, const Vector< Size, RealNumber > value_right )
+    {
+      // the primitive to conserved conversion would come in handy here
+    }
 };
