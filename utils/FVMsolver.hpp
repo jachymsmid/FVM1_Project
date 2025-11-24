@@ -22,7 +22,7 @@ template
 <
     size_t Size,
     class RealNumber,
-    template< size_t, class > class NumericalFlux,  // numerical flux
+    template< size_t, class, class > class NumericalFlux,  // numerical flux
     class FluxFunction,  // physical flux F(u)
     class BoundaryCondition
 >
