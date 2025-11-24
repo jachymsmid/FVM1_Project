@@ -2,5 +2,5 @@
 
 #include <array>
 
-template < std::size_t Size, class RealNumber >
-using Vector = std::array< RealNumber, Size>;
+template <  class RealNumber, std::size_t Length >
+using Vector = std::array< RealNumber, Length >;
