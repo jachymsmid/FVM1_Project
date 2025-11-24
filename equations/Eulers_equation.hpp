@@ -1,43 +1,47 @@
 #include <array>
+#include "../utils/GeneralVector.hpp"
+#include "../utils/DataStorage.hpp"
+
 
 template
 <
   std::size_t Size,
-  class RealNumber
->
-using Vector = std::array< RealNumber, Size >;
-
-template
-<
-  std::size_t Size,
-  class RealNumber
+  std::size_t Length,
+  class RealNumber,
+  RealNumber gamma_g
 >
 struct EulersEquations {
-    RealNumber gamma;
 
-    // tok
-    Vector< Size, RealNumber > operator()(const Vector< Size, RealNumber > &u) const {
-        Vector< Size, RealNumber > flux;
-
-        RealNumber rho = u[0];
-        RealNumber mom = u[1];
-        RealNumber E   = u[2];
-
-        RealNumber v = mom / rho;
-        RealNumber p = (gamma - 1.0) * (E - 0.5 * rho * v * v);
-
-        flux[0] = mom;
-        flux[1] = mom * v + p;
-        flux[2] = v * (E + p);
-
-        return flux;
-    }
-
-    // prim to cons
-    RealNumber operator()( const Vector< Size, RealNumber> value_left, const Vector< Size, RealNumber > value_right )
+    // flux function 
+    static void flux(const DataStorage< RealNumber, Size, Length > &data, DataStorage< RealNumber, Size, Length > &flux)
     {
-      // the primitive to conserved conversion would come in handy here
+      for ( std::size_t i = 0; i < Length; i++ )
+      {
+        RealNumber rho = data[0][i];
+        RealNumber mom = data[1][i];
+        RealNumber E   = data[2][i];
+
+        // I could use the cons to prim here
+        RealNumber v = mom / rho;
+        RealNumber p = ( gamma_g - 1.0) * (E - 0.5 * rho * v * v);
+
+        flux[0][i] = mom;
+        flux[1][i] = mom * v + p;
+        flux[2][i] = v * (E + p);
+      }
     }
 
-    RealNumber max_speed(){};
+    //// prim to cons
+    //RealNumber operator()( const Vector< Size, RealNumber> value_left, const Vector< Size, RealNumber > value_right )
+    //{
+    //  // the primitive to conserved conversion would come in handy here
+    //}
+    //// cons to prim
+    //RealNumber operator()( const Vector< Size, RealNumber> value_left, const Vector< Size, RealNumber > value_right )
+    //{
+    //  // the primitive to conserved conversion would come in handy here
+    //}
+
+    // also could use the cons to prim here so do it!
+    static RealNumber max_speed(){};
 };

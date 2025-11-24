@@ -1,12 +1,7 @@
 #pragma once
 
-#include <array>
-template
-<
-  std::size_t Size,
-  class RealNumber
->
-using Vector = std::array< RealNumber, Size >;
+#include "GeneralVector.hpp"
+#include "DataStorage.hpp"
 
 template
 <
@@ -16,35 +11,27 @@ template
 >
 struct Sods_problem
 {
-    using VectorS = Vector< Size, RealNumber >;
-
-    RealNumber x0;  // position of the diaphragm 
-    VectorS left;
-    VectorS right;
-
-    // constructor
-    Sods_problem( RealNumber x0, VectorS L, VectorS R)
-        : x0(x0), left(L), right(R) {}
-
-    void impose( DataType data, RealNumber spatial_step )
+    static void impose( DataType &data,
+                        RealNumber spatial_step,
+                        RealNumber x0,
+                        Vector< RealNumber, Size > left,
+                        Vector< RealNumber, Size > right )
     {
       RealNumber x; // coordinate
       for ( std::size_t i = 0; i < Size; i++ )
       {
-        for ( std::size_t j = 0; j < Size; j++ )
+        for ( std::size_t j = 0; j < data[0].size(); j++ )
         {
           x = i * spatial_step;
           if ( x < x0 )
           {
-            data[ i ][ j ] = left[ j ];
+            data[ i ][ j ] = left[ i ];
           }
           else
           {
-            data[ i ][ j ] = right[ j ];
+            data[ i ][ j ] = right[ i ];
           }
-          // is ternary operator here any better?
         }
       }
-
     }
 };
