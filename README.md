@@ -2,3 +2,5 @@
 
 **PROBLEM:**/
 Write a script for solving the Sod's problem (Riemann's problem for the Euler's equations) using the finite volume method with Rusanovov's numerical flow. Get solution at times $t = 0.1$ and $t = 0.2$.
+
+What I decided to do is a simple fvm solver for 1D hyperbolic problems, it's supposed to be a base for a larger project. That is a full fledged paralellized fvm solver library.
