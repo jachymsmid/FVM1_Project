@@ -1,9 +1,18 @@
 TODO:
+   - [ ] make the code accept generalized array
+        - [ ] ODE solver
+        - [x] FVM solver
+        - [ ] Equations
+        - [ ] Boundary conditions
+        - [x] Initial conditions
    - [ ] discretization in time
        - [x] forward Euler
        - [ ] Heune ( RK2 )
        - [ ] some RK4
        - [ ] Svata's scheme
+   - [ ] discretization in space
+        - [x] Rusanov
+   - [ ] better algorithm for rhs_array computation ( in the FVMsolver ) it uses too many for loops rn
    - [ ] VTK, vector.dump
    - [ ] code documentation
    - [ ] implement conservative to primitive conversion and vice versa - where? Eulers_equations.hpp?
