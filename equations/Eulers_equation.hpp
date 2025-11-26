@@ -5,15 +5,14 @@
 
 template
 <
-  std::size_t Size,
-  std::size_t Length,
   class RealNumber,
+  std::size_t Length,
   RealNumber gamma_g
 >
 struct EulersEquations {
 
     // flux function 
-    static void flux(const DataStorage< RealNumber, Size, Length > &data, DataStorage< RealNumber, Size, Length > &flux)
+    static void flux(const DataStorage< RealNumber, 3, Length > &data, DataStorage< RealNumber, 3, Length > &flux)
     {
       for ( std::size_t i = 0; i < Length; i++ )
       {
