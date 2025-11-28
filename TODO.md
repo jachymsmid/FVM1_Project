@@ -1,16 +1,10 @@
 TODO:
-   - [ ] make the code accept generalized array
-        - [ ] ODE solver
-        - [x] FVM solver
-        - [ ] Equations
-        - [ ] Boundary conditions
-        - [x] Initial conditions
    - [ ] discretization in time
        - [x] forward Euler
        - [ ] Heune ( RK2 )
        - [ ] some RK4
        - [ ] Svata's scheme
-   - [ ] discretization in space
+   - [ ] numerical flux
         - [x] Rusanov
    - [ ] better algorithm for rhs_array computation ( in the FVMsolver ) it uses too many for loops rn
    - [ ] VTK, vector.dump
@@ -28,3 +22,9 @@ DONE:
    - [x] implement zero gradient boundary condition
    - [x] CMake
    - [x] tie everything into objects
+   - [x] make the code accept generalized array, and utilize its methods
+        - [x] ODE solver
+        - [x] FVM solver
+        - [x] Equations
+        - [x] Boundary conditions
+        - [x] Initial conditions
