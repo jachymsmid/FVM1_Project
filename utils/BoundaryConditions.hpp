@@ -1,28 +1,39 @@
 #pragma once
 
-#include <array>
-#include <vector>
+#include "GeneralVector.hpp"
+#include "DataStorage.hpp"
 
 template
 <
+  class RealNumber,
   std::size_t Size,
-  class RealNumber
->
-using Vector = std::array< RealNumber, Size>;
-
-template
-<
-  std::size_t Size,
-  class RealNumber 
+  std::size_t Length
 >
 struct NeumannBC {
-    using VectorS = Vector< Size, RealNumber >;
-    using DataType = std::vector< VectorS >;
 
-    VectorS left( const DataType &data ) const {
-        return data[0];
+    Vector< RealNumber, Size > left( const DataStorage< RealNumber, Size, Length > &data ) const 
+    {
+      Vector< RealNumber, Size > vector_left;
+
+      for ( std::size_t i = 0; i < Size; i++ )
+      {
+        vector_left[i] = data[i][0];
+      }
+
+      return vector_left;
+
     }
-    VectorS right( const DataType &data ) const {
-        return data[data.size() - 1];
+
+    Vector< RealNumber, Size > right( const DataStorage<RealNumber, Size, Length >  &data ) const
+    {
+      Vector< RealNumber, Size > vector_right;
+
+      for ( std::size_t i = 0; i < Size; i++ )
+      {
+        vector_right[i] = data[i][Size - 1];
+      }
+
+      return vector_right;
+
     }
 };
