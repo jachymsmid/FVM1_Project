@@ -1,15 +1,13 @@
 #pragma once
 
-#include <vector>
-
-
 // -----------------------------------------
 //          ODEsolver
 // -----------------------------------------
 
+#include <cstddef>
 template
 <
-  class DataType,
+  class DataStorage,
   class RealNumber,
   template< class, class, class > class Method,
   class RHS,
@@ -22,16 +20,13 @@ public:
   ODEsolver( const RHS &rhs_function_, const TimeStepType &time_step_function_ ) : rhs_function( rhs_function_ ), time_step_function( time_step_function_ ) {}
 
   // computes the next time_step
-  DataType next_step(TimeStepType time_step_function, RealNumber time, const DataType &data_previous)
+  DataStorage next_step(TimeStepType time_step_function, RealNumber time, const DataStorage &data_previous)
   {
-    DataType data = data_previous; // this shoul be a copy constructor
+    DataStorage data = data_previous; // this shoul be a copy constructor
     RealNumber time_step = time_step_function( data_previous ); // call time-stepping function defined by FVMsolver
-    Method< DataType, RealNumber, TimeStepType >::step( rhs_function, time, time_step, data); // advences data one time_step into future
+    Method< DataStorage, RealNumber, TimeStepType >::step( rhs_function, time_step, data); // advences data one time_step into future
     return data;
   }
-
-  // solve the whole equation, return array of data at different time steps
-  std::vector< DataType > solve(){}
 
 private:
     RHS rhs_function;
@@ -41,17 +36,22 @@ private:
 // ------------------ Euler ---------------------------
 template
 <
-    class DataType,
+    class DataStorage,
     class RealNumber
 >
 struct Euler
 {
   template<class RHS>
-  static void step(RHS &rhs_function, RealNumber time, RealNumber time_step, DataType &data)
+  static void step(RHS &rhs_function, RealNumber time_step, DataStorage &data)
   {
-    DataType k1 = rhs_function( time, data );
-    for (size_t i = 0; i < data.size(); ++i)
-      data[i] += time_step * k1[i];
+    DataStorage rhs = rhs_function( data );
+    for (std::size_t i = 0; i < data.getSize(); i++ )
+    {
+      for ( std::size_t j = 0; j < data.getLength(); j++ )
+      {
+        data(i,j) += time_step * rhs(i,j);
+      }
+    }
   }
 };
 
@@ -66,11 +66,8 @@ template
 struct Heune 
 {
   template<class RHS>
-  static void step(RHS &rhs_function, RealNumber time, TimeStepType &time_step, DataType &data)
+  static void step(RHS &rhs_function, TimeStepType &time_step, DataType &data)
   {
-    DataType k1 = rhs_function( time, data );
-    for (size_t i = 0; i < data.size(); ++i)
-      data[i] += time_step * k1[i];
   }
 };
 

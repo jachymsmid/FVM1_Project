@@ -1,32 +1,33 @@
-#include <array>
-#include "../utils/GeneralVector.hpp"
-#include "../utils/DataStorage.hpp"
+#pragma once
 
+#include <iostream>
 
 template
 <
   class RealNumber,
-  std::size_t Length,
+  class DataStorage,
+  class Vector,
   RealNumber gamma_g
 >
 struct EulersEquations {
 
     // flux function 
-    static void flux(const DataStorage< RealNumber, 3, Length > &data, DataStorage< RealNumber, 3, Length > &flux)
+    static void flux(const DataStorage &data, DataStorage &flux)
     {
-      for ( std::size_t i = 0; i < Length; i++ )
+      if ( data.getSize() != 3 ) std::cout << "The data has to be of size (3, n) for the Euler's equations\n";
+      for ( std::size_t i = 0; i < data.getLength(); i++ )
       {
-        RealNumber rho = data[0][i];
-        RealNumber mom = data[1][i];
-        RealNumber E   = data[2][i];
+        RealNumber rho = data(0,i);
+        RealNumber mom = data(1,i);
+        RealNumber E   = data(2,i);
 
         // I could use the cons to prim here
         RealNumber v = mom / rho;
         RealNumber p = ( gamma_g - 1.0) * (E - 0.5 * rho * v * v);
 
-        flux[0][i] = mom;
-        flux[1][i] = mom * v + p;
-        flux[2][i] = v * (E + p);
+        flux(0,i) = mom;
+        flux(1,i) = mom * v + p;
+        flux(2,i) = v * (E + p);
       }
     }
 
@@ -42,5 +43,7 @@ struct EulersEquations {
     //}
 
     // also could use the cons to prim here so do it!
-    static RealNumber max_speed(){};
+    static RealNumber max_speed( Vector cell_left, Vector cell_right )
+    {
+    };
 };

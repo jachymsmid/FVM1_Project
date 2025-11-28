@@ -1,37 +1,27 @@
 #pragma once
 
-#include "GeneralVector.hpp"
-#include "DataStorage.hpp"
-
+#include <cstddef>
 template
 <
-  std::size_t Size,
   class RealNumber, 
-  class DataType
+  class DataStorage,
+  class Vector
 >
 struct Sods_problem
 {
-    static void impose( DataType &data,
+    static void impose( DataStorage &data,
                         RealNumber spatial_step,
                         RealNumber x0,
-                        Vector< RealNumber, Size > left,
-                        Vector< RealNumber, Size > right )
+                        Vector left,
+                        Vector right )
     {
       RealNumber x; // coordinate
-      for ( std::size_t i = 0; i < Size; i++ )
+      for ( std::size_t i = 0; i < data.getLength(); i++ )
       {
-        for ( std::size_t j = 0; j < data[0].size(); j++ )
-        {
-          x = i * spatial_step;
-          if ( x < x0 )
-          {
-            data[ i ][ j ] = left[ i ];
-          }
-          else
-          {
-            data[ i ][ j ] = right[ i ];
-          }
-        }
+        x = i * spatial_step;
+
+        data( i ) = ( x < x0 ) ? left : right;
+        
       }
     }
 };
