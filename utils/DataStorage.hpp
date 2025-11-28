@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GeneralVector.hpp"
+#include <fstream>
 template < class RealNumber, std::size_t Size, std::size_t Length >
 class DataStorage
 {
@@ -34,6 +35,19 @@ public:
   }
 
   // print the data into a file
-  void print() {}
+  void print( std::string file_name )
+  {
+    std::ofstream file;
+    file.open( file_name );
+    for ( std::size_t i = 0; i < Length; i++ )
+    {
+      for ( std::size_t j = 0; j < Size; j++ )
+      {
+        file << data[ j ][ i ] << " ";
+      }
+      file << std::endl;
+    }
+    file.close();
+  }
 
 };
