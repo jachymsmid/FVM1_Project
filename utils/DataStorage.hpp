@@ -10,6 +10,17 @@ public:
   //constructor
   DataStorage() = default;
 
+  DataStorage( DataStorage &other )
+  {
+    for ( std::size_t i = 0; i < Size; i++ )
+    {
+      for ( std::size_t j = 0; j < Length; j++ )
+      {
+        data[i][j] = other[i][j];
+      }
+    }
+  }
+
   // the data being stored
   std::array< Vector< RealNumber, Length >, Size > data;
 
