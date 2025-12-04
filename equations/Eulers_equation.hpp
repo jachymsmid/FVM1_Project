@@ -7,7 +7,7 @@ template
   class RealNumber,
   class DataStorage,
   class Vector,
-  RealNumber gamma_g
+  float gamma_g
 >
 struct EulersEquations {
 
@@ -45,5 +45,6 @@ struct EulersEquations {
     // also could use the cons to prim here so do it!
     static RealNumber max_speed( Vector cell_left, Vector cell_right )
     {
+      return 1.f;
     };
 };
