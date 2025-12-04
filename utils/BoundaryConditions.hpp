@@ -5,7 +5,7 @@
 template
 <
   class RealNumber,
-  size_t Size,
+  std::size_t Size,
   class DataStorage
 >
 struct NeumannBC {

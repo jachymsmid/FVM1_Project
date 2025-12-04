@@ -12,7 +12,7 @@
 template
 <
     class RealNumber,
-    template< size_t, class, class > class NumericalFlux,  // numerical flux
+    class NumericalFlux,  // numerical flux
     class Equation,  // physical flux F(u)
     class BoundaryCondition,
     class DataStorage
@@ -20,15 +20,12 @@ template
 class FVMsolver {
 public:
 
-    
-    // constructor
-    FVMsolver( RealNumber dx, Equation Flux, BoundaryCondition BC) : spatial_step_(dx), boundary_condition_(BC) {}
-
-    void rhs( const DataStorage &data, DataStorage &rhs_array )
+    static void rhs( const DataStorage &data, DataStorage &rhs_array, RealNumber spatial_step )
     {
+      DataStorage interface_flux_;
 
-      Vector< RealNumber, data.getSize() > ghost_cell_left = boundary_condition_.left( data );
-      Vector< RealNumber, data.getSize() > ghost_cell_right = boundary_condition_.right( data );
+      Vector< RealNumber, data.getSize() > ghost_cell_left = BoundaryCondition::left( data );
+      Vector< RealNumber, data.getSize() > ghost_cell_right = BoundaryCondition::right( data );
 
       Vector< RealNumber, data.getSize() > value_left, value_center, value_right; // all the values for one cell, so for eulers this is a vector of three values
 
@@ -39,23 +36,24 @@ public:
         value_center = data(2*j+1);
         value_right = ( j == data.getLength()/2 - 1 ) ? ghost_cell_right : data(2*j+2);
 
-        interface_flux_(2*j) = NumericalFlux< data.getSize(), RealNumber, Equation >::numerical_flux( value_left, value_center );
-        interface_flux_(2*j+1) = NumericalFlux< data.getSize(), RealNumber, Equation >::numerical_flux( value_center, value_right );
+        interface_flux_(2*j) = NumericalFlux::numerical_flux( value_left, value_center );
+        interface_flux_(2*j+1) = NumericalFlux::numerical_flux( value_center, value_right );
       }
 
       for ( std::size_t i = 0; i < data.getSize(); i++ )
       {
         for ( std::size_t j = 0; j < data.getLength(); j++ )
         {
-          rhs_array(i,j+1) = - ( interface_flux_(i,j) - interface_flux_(i,j+1) ) / spatial_step_;
+          rhs_array(i,j+1) = - ( interface_flux_(i,j) - interface_flux_(i,j+1) ) / spatial_step;
         }
       }
     }
 
-private:
-    RealNumber spatial_step_; // only for regular grids
-    BoundaryCondition boundary_condition_;
-    DataStorage interface_flux_;
+    static RealNumber time_step( const DataStorage &data )
+    {
+      return 0.001;
+    }
+
 };
 
 

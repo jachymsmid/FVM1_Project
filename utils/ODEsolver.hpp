@@ -7,37 +7,37 @@
 #include <cstddef>
 template
 <
-  class DataStorage,
   class RealNumber,
-  template< class, class, class > class Method,
-  class RHS,
-  class TimeStepType
+  class DataStorage,
+  class Method,
+  class RHS_function_type,
+  class TimeStep_function_type
 >
 class ODEsolver
 {
 public:
   // constructor - needs the rhs() and time_step()
-  ODEsolver( const RHS &rhs_function_, const TimeStepType &time_step_function_ ) : rhs_function( rhs_function_ ), time_step_function( time_step_function_ ) {}
+  ODEsolver( RHS_function_type &rhs_function_, TimeStep_function_type &time_step_function_ ) : rhs_function( rhs_function_ ), time_step_function( time_step_function_ ) {}
 
   // computes the next time_step
-  DataStorage next_step(TimeStepType time_step_function, RealNumber time, const DataStorage &data_previous)
+  DataStorage next_step(RealNumber time, const DataStorage &data_previous)
   {
     DataStorage data = data_previous; // this shoul be a copy constructor
     RealNumber time_step = time_step_function( data_previous ); // call time-stepping function defined by FVMsolver
-    Method< DataStorage, RealNumber, TimeStepType >::step( rhs_function, time_step, data); // advences data one time_step into future
+    Method::step( rhs_function, time_step, data); // advences data one time_step into future
     return data;
   }
 
 private:
-    RHS rhs_function;
-    TimeStepType time_step_function;
+    RHS_function_type rhs_function;
+    TimeStep_function_type time_step_function;
 };
 
 // ------------------ Euler ---------------------------
 template
 <
-    class DataStorage,
-    class RealNumber
+    class RealNumber,
+    class DataStorage
 >
 struct Euler
 {
