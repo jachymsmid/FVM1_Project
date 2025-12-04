@@ -1,3 +1,0 @@
-/home/j4s4/Documents/school/fvm/project/build/CMakeFiles/fvm.dir
-/home/j4s4/Documents/school/fvm/project/build/CMakeFiles/edit_cache.dir
-/home/j4s4/Documents/school/fvm/project/build/CMakeFiles/rebuild_cache.dir
